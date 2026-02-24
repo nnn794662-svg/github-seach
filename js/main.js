@@ -1,39 +1,56 @@
 
-const usernameInput = document.getElementById("usernameInput")
+const username = document.getElementById("usernameInput")
 const btn = document.querySelector(".search-btn")
-const profilecard = document.getElementById("profile-card")
+const Profilecard = document.getElementById("profilecard")
+const notFoundcard = document.getElementById("notFoundcard")
+const seachcard = document.getElementById("seachcard")
 
 btn.addEventListener("click", (e) => {
     e.preventDefault()
-    let apiurl =`https://api.github.com/users/${username} `
+    let apiurl = `https://api.github.com/users/${usernameInput} `
     fetch(apiurl)
         .then(response => response.json())
         .then(res => {
             if (res.status == "404") {
-                let notfound =`        <div class="gh-blankslate">
-            <div class="gh-blankslate-icon">
-                <svg height="40" viewBox="0 0 24 24" width="40" fill="currentColor">
-                    <path
-                        d="M10.25 2a8.25 8.25 0 0 1 6.34 13.53l5.69 5.69a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215l-5.69-5.69A8.25 8.25 0 1 1 10.25 2ZM3.5 10.25a6.75 6.75 0 1 0 13.5 0 6.75 6.75 0 0 0-13.5 0Z">
-                    </path>
-                </svg>
-            </div>
+                notFoundcard.style.display = "block"
+                Profilecard.style.display = "none"
+            }
+            else {
+                notFoundcard.style.display = "block"
+                Profilecard.style.display = "flex"
+                Profilecard.innerHTML = `
+                <div id="profilecard" class="gh-profile-card">
+            <div class="banner"></div>
+            <div class="content">
+                <div class="main-info">
+                    <img src="${res.avatar_url} " alt="User" class="avatar-large">
+                    <div class="text-info">
+                        <h1>${res.name}</h1>
+                        <p class="username">${res.html_url}</p>
+                    </div>
+                </div>
 
-            <h2 class="gh-blankslate-heading">Hech qanday natija topilmadi</h2>
-            <p class="gh-blankslate-text">
-                Sizning qidiruvingizga mos keladigan ma'lumot topilmadi. Qidiruv kalit so'zlarini o'zgartirib ko'ring
-                yoki filtrlarni tozalang.
-            </p>
+                <p class="user-bio">${res.bio}</p>
 
-            <div class="gh-blankslate-actions">
-                <button class="gh-btn-primary" onclick="resetSearch()">Qidiruvni tozalash</button>
-                <a href="#" class="gh-link">Yordam olish</a>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <span class="num">${res.public_repos}</span>
+                        <span class="label">Postlar</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="num">${res.followers}</span>
+                        <span class="label">Obunachilar</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="num">${res.following}</span>
+                        <span class="label">Obunalar</span>
+                    </div>
+                </div>
             </div>
         </div>`
-        profilecard.append(notfound)
             }
         })
-        .catch(err => {
-            console.log(err)
-        }) 
+        .catch(error => {
+            console.log(error)
+        })
 })
